@@ -22,39 +22,9 @@ object Sample {
 
   }
 
-    def last[A](l: List[A]): A = {
-      l match {
-        case x :: Nil => x
-        case x :: tail => last(tail)
-        case Nil => throw new NoSuchElementException
-      }
-    }
-
-    def penultimate[A](l: List[A]): A = {
-      if (l.isEmpty) { throw new NoSuchElementException }
-      else if (l.tail.isEmpty ) { throw new NoSuchElementException }
-      else if (l.tail.tail.isEmpty) { l.head }
-      else { penultimate(l.tail) }
-    }
-
-    def nth[A](n: Int, l: List[A]): A = {
-      if (l.isEmpty) { throw new NoSuchElementException }
-      else if (n==0) { l.head }
-      else { nth(n-1, l.tail ) }
-    }
-
     def length[A](l: List[A]): Int = {
       if (l.isEmpty) { 0 }
       else { 1 + length(l.tail) }
-    }
-
-    def reverse[A](l: List[A]): List[A] = {
-      if (l.isEmpty) { List() }
-      else { l.last::reverse(l.init) }
-    }
-
-    def isPalindrome[A](l: List[A]): Boolean = {
-      l==reverse(l)
     }
 
     def compress[A](l: List[A]): List[A] = {
@@ -62,39 +32,6 @@ object Sample {
       else if (l.tail.isEmpty) { l }
       else if ( l.head==l.tail.head ) { compress(l.tail) }
       else { l.head::compress(l.tail) }
-    }
-
-    def combineFirstTwo[A](l: List[List[A]]): List[List[A]] = {
-      if (l.length>1) {
-        (l.head:::l.tail.head)::l.tail.tail
-      }
-      else { l }
-    }
-
-    def pack[A](l: List[A]): List[List[A]] = {
-      if (l.isEmpty) { List(l) }
-      else if (l.tail.isEmpty) { List(l) }
-      else if ( l.head==l.tail.head ) { val temp=List(l.head)::pack(l.tail) ; combineFirstTwo(temp) }
-      else { List(l.head)::pack(l.tail) }
-    }
-
-    def encode[A](l: List[A]): List[(Int, A)] = {
-      val packed=pack(l)
-      packed.map( x => (x.length, x.head) )
-    }
-
-    def encodeModified[A](l: List[A]): List[Any] = {
-      encode(l).map( x => if (x._1==1) { x._2 } else { x } )
-    }
-
-    def decodeOne[A](x: A, n: Int): List[A] = {
-      if (n==0) { List() }
-      else { x::decodeOne(x, n-1) }
-    }
-
-    def decode[A](l: List[(Int, A)]): List[A] = {
-      if (l.isEmpty) { List() }
-      else { decodeOne(l.head._2, l.head._1):::decode(l.tail) }
     }
 
     def combineFirstTwoDirect[A](l: List[(Int, A)]): List[(Int, A)] = {
@@ -111,53 +48,10 @@ object Sample {
       else { (1, l.head)::encodeDirect(l.tail) }
     }
 
-    def duplicate[A](l: List[A]): List[A] = {
-      if (l.isEmpty) { l }
-      else { l.head::l.head::duplicate(l.tail) }
-    }
-
-    def duplicateN[A](n: Int, l: List[A]): List[A] = {
-      if (l.isEmpty) { l }
-      else { decodeOne(l.head, n):::duplicateN(n, l.tail) }
-    }
-
-    def dropModN[A](n: Int, m: Int, l: List[A]): List[A] = {
-      if (l.isEmpty) { l }
-      else if (m%n==0) { dropModN(n, m + 1, l.tail) }
-      else { l.head::dropModN(n, m + 1, l.tail) }
-    }
-
-    def drop[A](n: Int, l: List[A]): List[A] = {
-      dropModN(n, 1, l)
-    }
-
-    def split[A](n: Int, l: List[A]): (List[A], List[A]) = {
-      if (n==0) { (List(), l) }
-      else if (l.isEmpty) { (List(), List()) }
-      else { val temp=split(n-1, l.tail); (l.head::temp._1, temp._2) }
-    }
-
-    def slice[A](start: Int, stop: Int, l: List[A]): List[A] = {
-      split(stop-start, split(start, l)._2)._1
-    }
-
-    def rotate[A](n: Int, l: List[A]): List[A] = {
-      if (n>=0) {
-        val sliced = split(n, l)
-        sliced._2:::sliced._1
-      }
-      else {
-        val sliced=split(l.length + n, l)
-        sliced._2:::sliced._1
-      }
-    }
-
     def removeAt[A](n: Int, l: List[A]): (List[A], A) = {
       if (n==0) { (l.tail, l.head) }
       else { val removed=removeAt(n-1, l.tail); (l.head::removed._1, removed._2) }
     }
-
-
 
 }
 
